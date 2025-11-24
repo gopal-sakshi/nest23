@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, Sse, } from '@nestjs/common';
 import { CreateFootballerDto } from 'src/footballer23/create-Footballer.dto';
 import { UpdateFootballerDto } from 'src/footballer23/update-Footballer.dto';
 import { FootballerService } from './footballer.service';
+import { interval, map, Observable } from 'rxjs';
 
 @Controller('footballer')
 export class FootballerController {
@@ -83,6 +84,16 @@ export class FootballerController {
             return response.status(err.status).json(err.response);
         }
     }
+    /***************************************************************************** */
+
+    @Sse('/sse_endpoint23')
+    sse23(): Observable<MessageEvent> {             // NOT __ WORKING
+        console.log("rchd endpoint");
+        return interval(1000).pipe(
+            map((_) => ({ data: { hello: 'world' } }) as MessageEvent),
+        );
+  }
+
     /***************************************************************************** */
 
 }

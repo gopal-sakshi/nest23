@@ -30,7 +30,8 @@ export class StudentService {
   }
   
   async getAllStudents(): Promise<IStudent[]> {
-    const studentData = await this.studentModel.find();
+    const studentData = await this.studentModel.find().lean().exec();       // this is to use interceptor
+                                                                            // and avoid isNew, $__ properties in response
     if (!studentData || studentData.length == 0) {
       throw new NotFoundException('Students data not found!');
     }

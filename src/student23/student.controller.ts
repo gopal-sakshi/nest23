@@ -1,8 +1,11 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, UseInterceptors, } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto } from 'src/student23/create-student.dto';
 import { UpdateStudentDto } from 'src/student23/update-student.dto';
+import { GetStudentDecorator23 } from './student-custom-decorator';
+import { Student23Interceptors } from './student-custom-interceptor';
 
+// @UseInterceptors(Student23Interceptors)         // applies to all routes in this controller
 @Controller('student')
 export class StudentController {
 
@@ -49,23 +52,33 @@ export class StudentController {
         }
     }
     @Get()
-    async getStudents(@Res() response) {
+    @UseInterceptors(Student23Interceptors)
+    async getStudents() {
         try {
             const studentData = await this.studentService.getAllStudents();
-            return response.status(HttpStatus.OK).json({
-                message: 'All students data found successfully',
+
+            // ======== this is with interceptor ==========
+            return {
                 studentData,
-            });
+            };
+
+            // ============== this is without interceptor ========================================
+            // return response.status(HttpStatus.OK).json({
+            //     studentData,
+            // });
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return {
+                statusCode: err.status || HttpStatus.INTERNAL_SERVER_ERROR,
+                error: err.response || err.message || 'Internal server error',
+            };
         }
     }
     @Get('/:id')
-    async getStudent(@Res() response, @Param('id') studentId: string) {
+    async getStudent(@GetStudentDecorator23() stuVal:string, @Res() response, @Param('id') studentId: string) {
         try {
             const existingStudent = await this.studentService.getStudent(studentId);
             return response.status(HttpStatus.OK).json({
-                message: 'Student found successfully',
+                stuValInfo: `using_custom_decorator23___stuVal === ${stuVal}`,
                 existingStudent,
             });
         } catch (err) {

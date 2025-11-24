@@ -14,9 +14,11 @@ import { Footballer23Middleware } from './footballer.middleware';
     providers: [FootballerService],
 })
 export class Footballer23Module {
-    configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(Footballer23Middleware)
-      .forRoutes(FootballerController);
-  }
+    // configure(consumer: MiddlewareConsumer) {
+    //     consumer
+    //         .apply(Footballer23Middleware)
+    //         // Exclude single path and paths starting with footballer/nonAuth23
+    //         .exclude('footballer/sse_endpoint23', '/footballer/nonAuth23/*')
+    //         .forRoutes(FootballerController);
+    // }
 }
