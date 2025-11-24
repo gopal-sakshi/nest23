@@ -2,9 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { CreateFootballerDto } from 'src/z_dto/create-Footballer.dto';
-import { UpdateFootballerDto } from 'src/z_dto/update-Footballer.dto';
-import { IFootballer } from 'src/z_interface/footballer.interface';
+import { CreateFootballerDto } from 'src/footballer23/create-Footballer.dto';
+import { UpdateFootballerDto } from 'src/footballer23/update-Footballer.dto';
+import { IFootballer } from 'src/footballer23/footballer.interface';
 
 
 @Injectable()

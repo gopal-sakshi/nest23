@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateStudentDto } from 'src/z_dto/create-student.dto';
-import { UpdateStudentDto } from 'src/z_dto/update-student.dto';
-import { IStudent } from 'src/z_interface/student.interface';
+import { CreateStudentDto } from 'src/student23/create-student.dto';
+import { UpdateStudentDto } from 'src/student23/update-student.dto';
+import { IStudent } from 'src/student23/student.interface';
 
 @Injectable()
 export class StudentService {

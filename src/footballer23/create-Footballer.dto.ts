@@ -1,5 +1,5 @@
 import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsString, MaxLength, MinLength } from 'class-validator';
-import { Address23, positionEnum23 } from 'src/z_schema/footballer.schema';
+import { Address23, positionEnum23 } from 'src/footballer23/footballer.schema';
 
 // name, position, age, previousClubs, addresses
 

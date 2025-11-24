@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, } from '@nestjs/common';
-import { CreateFootballerDto } from 'src/z_dto/create-Footballer.dto';
-import { UpdateFootballerDto } from 'src/z_dto/update-Footballer.dto';
+import { CreateFootballerDto } from 'src/footballer23/create-Footballer.dto';
+import { UpdateFootballerDto } from 'src/footballer23/update-Footballer.dto';
 import { FootballerService } from './footballer.service';
 
 @Controller('footballer')

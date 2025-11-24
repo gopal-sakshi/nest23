@@ -1,5 +1,5 @@
 import { Controller, Get, Req, Res } from '@nestjs/common';
-import { Cats23ExamineReqObject } from './interfaces/cats23.interface';
+import { Cats23ExamineReqObject } from './cats23.interface';
 
 @Controller('cats23')
 export class Cats23Controller {
