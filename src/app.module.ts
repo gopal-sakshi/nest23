@@ -11,6 +11,10 @@ import { FootballerController } from './z_footballer/footballer.controller';
 import { StudentSchema } from './z_schema/student.schema';
 import { StudentController } from './z_student/student.controller';
 import { StudentService } from './z_student/student.service';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { GraphQLModule } from '@nestjs/graphql';
+import { join } from 'path';
+import { MovieModule } from './graph22/movie-module';
 
 @Module({
     imports: [
@@ -19,6 +23,7 @@ import { StudentService } from './z_student/student.service';
         }),
         MongooseModule.forFeature([{ name: 'Footballer23', schema: FootballerSchema }]),
         MongooseModule.forFeature([{ name: 'Student', schema: StudentSchema }]),
+        
     ],
     controllers: [
         AppController, Cats23Controller, 
