@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { Footballer23Module } from './footballer23/footballer.module';
 import { Student23Module } from './student23/student23.module';
 import { Cats23Module } from './cats23/cats23.module';
+import { Movies23Module } from './movie_mongoose/movies-module';
 
 @Module({
     imports: [
@@ -14,6 +15,7 @@ import { Cats23Module } from './cats23/cats23.module';
         Footballer23Module,
         Student23Module,
         Cats23Module,
+        Movies23Module              // uses mongoose, not directly mongodb driver
     ],
     controllers: [
         AppController, 
