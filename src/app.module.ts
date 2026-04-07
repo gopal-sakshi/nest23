@@ -12,6 +12,7 @@ import { Movies23Module } from './movie_mongoose/movies-module';
         MongooseModule.forRoot('mongodb://127.0.0.1:27017', {
             dbName: 'nestJS_db23',
         }),
+
         Footballer23Module,
         Student23Module,
         Cats23Module,

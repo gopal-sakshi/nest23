@@ -38,7 +38,7 @@ export class FootballerController {
                 message: 'Footballer has been successfully updated',
                 existingFootballer,
             });
-        } catch (err) {
+        } catch (err:any) {
             return response.status(err.status).json(err.response);
         }
     }
@@ -52,7 +52,7 @@ export class FootballerController {
                 message: 'All Footballers data found successfully',
                 FootballerData,
             });
-        } catch (err) {
+        } catch (err:any) {
             return response.status(err.status).json(err.response);
         }
     }
@@ -66,7 +66,7 @@ export class FootballerController {
                 message: 'Footballer found successfully',
                 existingFootballer,
             });
-        } catch (err) {
+        } catch (err:any) {
             return response.status(err.status).json(err.response);
         }
     }
@@ -80,7 +80,7 @@ export class FootballerController {
                 message: 'Footballer deleted successfully',
                 deletedFootballer,
             });
-        } catch (err) {
+        } catch (err:any) {
             return response.status(err.status).json(err.response);
         }
     }
@@ -92,7 +92,7 @@ export class FootballerController {
         return interval(1000).pipe(
             map((_) => ({ data: { hello: 'world' } }) as MessageEvent),
         );
-  }
+    }
 
     /***************************************************************************** */
 
