@@ -5,6 +5,7 @@ import { WinstonModule } from 'nest-winston';       // publish logs to http port
 import * as winston from 'winston';
 
 import { Logging23Interceptor } from './utils23/others23/logging-interceptor';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap23() {
     const app = await NestFactory.create(AppModule);
@@ -35,6 +36,23 @@ async function bootstarp23_winstonLogger() {
             ],
         }),
     });
+
+    // --- Kafka Microservice Configuration ---
+    app.connectMicroservice<MicroserviceOptions>({
+        transport: Transport.KAFKA,
+        options: {
+            client: {
+                brokers: ['localhost:9092'],
+            },
+            consumer: {
+                groupId: 'nest23-consumer-group',
+            },
+        },
+    });
+
+    // This starts the Kafka listeners in the background
+    await app.startAllMicroservices();
+
     app.useGlobalInterceptors(new Logging23Interceptor());
     await app.listen(process.env.PORT ?? 5566);
 }
