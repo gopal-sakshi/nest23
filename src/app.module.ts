@@ -7,6 +7,7 @@ import { Student23Module } from './student23/student23.module';
 import { Cats23Module } from './cats23/cats23.module';
 import { Movies23Module } from './movie_mongoose/movies-module';
 import { KafkaConsumerController } from './kafkaConsumer23/kafka-consumer23.controller';
+import { KafkaConsumerModule } from './kafkaConsumer23/kafka-consumer23.module';
 
 @Module({
     imports: [
@@ -17,11 +18,11 @@ import { KafkaConsumerController } from './kafkaConsumer23/kafka-consumer23.cont
         Footballer23Module,
         Student23Module,
         Cats23Module,
-        Movies23Module              // uses mongoose, not directly mongodb driver
+        Movies23Module,              // uses mongoose, not directly mongodb driver
+        KafkaConsumerModule
     ],
     controllers: [
         AppController, 
-        KafkaConsumerController
     ],
     providers: [
         AppService, 
