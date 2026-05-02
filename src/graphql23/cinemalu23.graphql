@@ -1,0 +1,15 @@
+type Movie {
+  _id: String!
+  title: String!
+  releaseYear: Int
+  director: String
+}
+
+type Query {
+  getMovies: [Movie!]!
+  getMovieById(_id: String!): Movie
+}
+
+type Mutation {
+  createMovie(title: String!, director: String!, releaseYear: Int!): Movie!
+}

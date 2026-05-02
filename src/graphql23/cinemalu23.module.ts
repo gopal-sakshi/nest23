@@ -1,7 +1,21 @@
 import { Module } from '@nestjs/common';
-import { Cinemalu23Resolver } from './ceinemalu23.resolver';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { join } from 'path';
+import { MoviesModule } from '@app/graphql23_telugu/movies.module';
 
 @Module({
-    providers: [Cinemalu23Resolver],
+    imports: [
+        MoviesModule,
+        GraphQLModule.forRoot<ApolloDriverConfig>({
+            driver: ApolloDriver,      
+            typePaths: ['./**/*.graphql'], 
+            definitions: {
+                path: join(process.cwd(), 'src/graphql23/cinemalu23.graphql.ts'),
+                outputAs: 'class',
+            },
+            playground: true, 
+        }),
+    ],
 })
 export class Cinemalu23Module { }

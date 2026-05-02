@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -8,18 +9,27 @@ import { Cats23Module } from './cats23/cats23.module';
 import { Movies23Module } from './movie_mongoose/movies-module';
 import { KafkaConsumerController } from './kafkaConsumer23/kafka-consumer23.controller';
 import { KafkaConsumerModule } from './kafkaConsumer23/kafka-consumer23.module';
+import { Cinemalu23Module } from './graphql23/cinemalu23.module';
 
 @Module({
     imports: [
-        MongooseModule.forRoot('mongodb://127.0.0.1:27017', {
-            dbName: 'nestJS_db23',
+        ConfigModule.forRoot({
+            isGlobal: true,
+            envFilePath: '.env'
+        }),
+        MongooseModule.forRootAsync({
+            inject: [ ConfigService ],
+            useFactory: (config:ConfigService) => ({
+                uri: config.get<string>('MONGO_URI')
+            })
         }),
 
         Footballer23Module,
         Student23Module,
         Cats23Module,
         Movies23Module,              // uses mongoose, not directly mongodb driver
-        KafkaConsumerModule
+        KafkaConsumerModule,
+        Cinemalu23Module
     ],
     controllers: [
         AppController, 
