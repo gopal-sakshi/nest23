@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package index;
+
+service IndexService {
+  rpc GetData (GetRequest) returns (GetResponse);
+}
+
+message GetRequest {
+  string id = 1;
+}
+
+message GetResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+}

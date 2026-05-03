@@ -15,10 +15,18 @@ export class Movie {
     director?: Nullable<string>;
 }
 
+export class GRPCMovie {
+    id?: Nullable<string>;
+    name?: Nullable<string>;
+    description?: Nullable<string>;
+}
+
 export abstract class IQuery {
     abstract getMovies(): Movie[] | Promise<Movie[]>;
 
     abstract getMovieById(_id: string): Nullable<Movie> | Promise<Nullable<Movie>>;
+
+    abstract getGrpcData(id: string): Nullable<GRPCMovie> | Promise<Nullable<GRPCMovie>>;
 }
 
 export abstract class IMutation {

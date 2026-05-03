@@ -5,9 +5,18 @@ type Movie {
   director: String
 }
 
+type gRPCMovie {
+    id: String
+    name: String
+    description: String
+}
+
 type Query {
   getMovies: [Movie!]!
   getMovieById(_id: String!): Movie
+
+  getGrpcData(id: String!): gRPCMovie
+
 }
 
 type Mutation {
