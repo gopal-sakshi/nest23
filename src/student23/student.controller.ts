@@ -47,7 +47,7 @@ export class StudentController {
                 message: 'Student has been successfully updated',
                 existingStudent,
             });
-        } catch (err) {
+        } catch (err:any) {
             return response.status(err.status).json(err.response);
         }
     }
@@ -66,7 +66,7 @@ export class StudentController {
             // return response.status(HttpStatus.OK).json({
             //     studentData,
             // });
-        } catch (err) {
+        } catch (err:any) {
             return {
                 statusCode: err.status || HttpStatus.INTERNAL_SERVER_ERROR,
                 error: err.response || err.message || 'Internal server error',
@@ -81,7 +81,7 @@ export class StudentController {
                 stuValInfo: `using_custom_decorator23___stuVal === ${stuVal}`,
                 existingStudent,
             });
-        } catch (err) {
+        } catch (err:any) {
             return response.status(err.status).json(err.response);
         }
     }
@@ -93,7 +93,7 @@ export class StudentController {
                 message: 'Student deleted successfully',
                 deletedStudent,
             });
-        } catch (err) {
+        } catch (err:any) {
             return response.status(err.status).json(err.response);
         }
     }

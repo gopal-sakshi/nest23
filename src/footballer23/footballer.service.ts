@@ -14,8 +14,7 @@ export class FootballerService {
 
     /********************************************************************* */
     async createFootballer(createFootballerDto: CreateFootballerDto): Promise<IFootballer> {
-        const newFootballer = await new this.footballerModel(createFootballerDto);
-        return newFootballer.save();
+        return await new this.footballerModel(createFootballerDto).save();
     }
     /********************************************************************* */
     
