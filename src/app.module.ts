@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
@@ -10,6 +10,8 @@ import { Movies23Module } from './movie_mongoose/movies-module';
 import { KafkaConsumerController } from './kafkaConsumer23/kafka-consumer23.controller';
 import { KafkaConsumerModule } from './kafkaConsumer23/kafka-consumer23.module';
 import { Cinemalu23Module } from './graphql23/cinemalu23.module';
+import { MetricsModule } from './z_metrics/metrics.module';
+import { MetricsMiddleware } from './utils23/others24/metrics-middleware23';
 
 @Module({
     imports: [
@@ -18,8 +20,8 @@ import { Cinemalu23Module } from './graphql23/cinemalu23.module';
             envFilePath: '.env'
         }),
         MongooseModule.forRootAsync({
-            inject: [ ConfigService ],
-            useFactory: (config:ConfigService) => ({
+            inject: [ConfigService],
+            useFactory: (config: ConfigService) => ({
                 uri: config.get<string>('MONGO_URI')
             })
         }),
@@ -29,13 +31,24 @@ import { Cinemalu23Module } from './graphql23/cinemalu23.module';
         Cats23Module,
         Movies23Module,              // uses mongoose, not directly mongodb driver
         KafkaConsumerModule,
-        Cinemalu23Module
+        Cinemalu23Module,
+        MetricsModule
     ],
     controllers: [
-        AppController, 
+        AppController,
     ],
     providers: [
-        AppService, 
+        AppService,
     ],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer
+            .apply(MetricsMiddleware)
+            .exclude({ path: 'metrics', method: RequestMethod.GET })
+            .forRoutes('*');
+    }
+}
+
+
+// export class AppModule { }      // use this simple one if you dont want prom metrics

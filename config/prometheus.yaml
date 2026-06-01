@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 5s # Scrape quickly for instant feedback while learning
+
+scrape_configs:
+  - job_name: 'otel-collector'
+    static_configs:
+      - targets: ['otel-collector:8889']
+
+
+# Prometheus is a polling engine. 
+# Your prometheus.yaml configuration dictates how often it knocks on your NestJS application's door 
+# http://localhost:3000/metrics) to collect fresh names.

@@ -1,6 +1,8 @@
-import { Controller, Get, Req, Res } from '@nestjs/common';
+import { Controller, Get, Req, Res, UseInterceptors } from '@nestjs/common';
 import { Cats23ExamineReqObject } from './cats23.interface';
+import { ControllerInterceptor23 } from '@app/utils23/interceptors23/controller-interceptor';
 
+@UseInterceptors(ControllerInterceptor23)
 @Controller('cats23')
 export class Cats23Controller {
   @Get()

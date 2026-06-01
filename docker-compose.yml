@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # 1. OpenTelemetry Collector (The Data Router)
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: nest23___otel_collector
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./config/collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "4318:4318"         # OTLP HTTP receiver (NestJS app connects here)
+    depends_on:
+      - prometheus
+      - tempo
+
+  # 2. Prometheus (Metrics Storage)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: nest23___prometheus_backend
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    volumes:
+      - ./config/prometheus.yaml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090" # Prometheus UI (Optional to look at raw metrics)
+
+  # 3. Grafana Tempo (Traces Storage)
+  tempo:
+    image: grafana/tempo:latest
+    container_name: nest23__tempo_backend
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - ./config/tempo.yaml:/etc/tempo.yaml # <-- Clean, standard volume mapping
+    ports:
+      - "3200:3200" # Tempo UI/API
+
+  # 4. Grafana (The UI Dashboard)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: nest23__grafana_ui
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true # Disables login screen
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin # Automatically makes you Admin without entering credentials
+    ports:
+      - "3000:3000" # The main web dashboard port
+    depends_on:
+      - prometheus
+      - tempo

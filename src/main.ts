@@ -1,16 +1,18 @@
+import './tracing';
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 import { WinstonModule } from 'nest-winston';       // publish logs to http port; so logstash can receive them
 import * as winston from 'winston';
 
-import { Logging23Interceptor } from './utils23/others23/logging-interceptor';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 import * as mongoose from 'mongoose';
 import { Kafka } from 'kafkajs';
 import Redis from 'ioredis';
 import { ConfigService } from '@nestjs/config';
+import { Logging23Interceptor } from './utils23/interceptors23/logging-interceptor';
 
 async function bootstrap23() {
     const app = await NestFactory.create(AppModule);
@@ -42,9 +44,6 @@ async function checkRedisMongoKafka() {
 
         console.log('All dependencies are online. Starting NestJS...');
 
-        const app = await NestFactory.create(AppModule);
-        await app.listen(3000);
-
     } catch (error) {
         console.error(`Dependency check failed: ${error}`);
         console.error('Gracefully exiting...');
@@ -53,7 +52,6 @@ async function checkRedisMongoKafka() {
 }
 
 async function bootstarp23_winstonLogger() {
-
 
     await checkRedisMongoKafka();
 
@@ -79,7 +77,6 @@ async function bootstarp23_winstonLogger() {
         }),
     });
 
-    // --- Kafka Microservice Configuration ---
     app.connectMicroservice<MicroserviceOptions>({
         transport: Transport.KAFKA,
         options: {
@@ -92,9 +89,8 @@ async function bootstarp23_winstonLogger() {
         },
     });
 
-    // This starts the Kafka listeners in the background
     await app.startAllMicroservices();
 
-    app.useGlobalInterceptors(new Logging23Interceptor());
-    await app.listen(process.env.PORT ?? 5566);
+    // app.useGlobalInterceptors(new Logging23Interceptor());           // disabling loggingInterceptor -- for prometheus metrics;
+    await app.listen(process.env.PORT ?? 5566);                         // loggingInterceptor is used for directing nestJs logs to elk stack
 }
