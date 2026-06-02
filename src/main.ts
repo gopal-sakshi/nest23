@@ -13,7 +13,7 @@ import { Kafka } from 'kafkajs';
 import Redis from 'ioredis';
 import { ConfigService } from '@nestjs/config';
 import { Logging23Interceptor } from './utils23/interceptors23/logging-interceptor';
-import { kafkaConfig } from './utils23/kafkaModule23/kafka.config';
+// import { kafkaConfig } from './utils23/kafkaModule23/kafka.config';
 
 async function bootstrap23() {
     const app = await NestFactory.create(AppModule);
@@ -49,12 +49,14 @@ async function checkRedisMongoKafka() {
         console.error(`Dependency check failed: ${error}`);
         console.error('Gracefully exiting...');
         process.exit(1); // Terminates the process with failure code
+    } finally {
+        await appContext.close();       // if you dont do this --- nestjs runs two times
     }
 }
 
 async function bootstarp23_winstonLogger() {
 
-    await checkRedisMongoKafka();
+    // await checkRedisMongoKafka();
 
     const app = await NestFactory.create(AppModule, {
         logger: WinstonModule.createLogger({
@@ -90,7 +92,7 @@ async function bootstarp23_winstonLogger() {
         },
     });
 
-    app.connectMicroservice(kafkaConfig);
+    // app.connectMicroservice(kafkaConfig);
     
     await app.startAllMicroservices();
 

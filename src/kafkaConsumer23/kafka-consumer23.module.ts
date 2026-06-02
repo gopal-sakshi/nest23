@@ -10,26 +10,11 @@ import { ConfigService } from '@nestjs/config';
         BullModule.forRoot({
             connection: { host: 'localhost', port: 6379, },
         }),
-
         BullModule.registerQueue({
             name: 'bullmq-handle-chestunna-redisQueue',
         }),
-        ClientsModule.registerAsync([
-            {
-                name: 'KAFKA_SERVICE',
-                inject: [ConfigService],
-                useFactory: () => ({
-                    transport: Transport.KAFKA,
-                    options: {
-                        client: { clientId: 'nest-consumer', brokers: ['localhost:9092'], },
-                        retry: { initialRetryTime: 100, retries: 8 }, // kafka container close aithe, 8 times try chesi, rest teesuko
-                        consumer: { groupId: 'nest-consumer-group', } // Essential for tracking offsets
-                    },
-                }),
-            },
-        ]),
     ],
     providers: [RedisQueueDataProcessor23],
-    controllers: [KafkaConsumerController],
+    controllers: [KafkaConsumerController],    
 })
 export class KafkaConsumerModule { }
