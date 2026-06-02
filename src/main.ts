@@ -13,6 +13,7 @@ import { Kafka } from 'kafkajs';
 import Redis from 'ioredis';
 import { ConfigService } from '@nestjs/config';
 import { Logging23Interceptor } from './utils23/interceptors23/logging-interceptor';
+import { kafkaConfig } from './utils23/kafkaModule23/kafka.config';
 
 async function bootstrap23() {
     const app = await NestFactory.create(AppModule);
@@ -89,6 +90,8 @@ async function bootstarp23_winstonLogger() {
         },
     });
 
+    app.connectMicroservice(kafkaConfig);
+    
     await app.startAllMicroservices();
 
     // app.useGlobalInterceptors(new Logging23Interceptor());           // disabling loggingInterceptor -- for prometheus metrics;

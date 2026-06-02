@@ -1,4 +1,4 @@
-import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 
 @Processor('bullmq-handle-chestunna-redisQueue')
@@ -11,6 +11,11 @@ export class RedisQueueDataProcessor23 extends WorkerHost {
         await new Promise(resolve => setTimeout(resolve, 2000));
 
         return { status: 'success' };
+    }
+
+    @OnWorkerEvent('completed')
+    onCompleted23(job: Job) {
+        console.log("completed23 babai --- ");
     }
 
 }

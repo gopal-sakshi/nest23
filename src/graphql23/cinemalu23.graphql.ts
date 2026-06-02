@@ -31,6 +31,12 @@ export abstract class IQuery {
 
 export abstract class IMutation {
     abstract createMovie(title: string, director: string, releaseYear: number): Movie | Promise<Movie>;
+
+    abstract createMovieWithPubSub(title: string, director: string, releaseYear: number): Movie | Promise<Movie>;
+}
+
+export abstract class ISubscription {
+    abstract movieAdded(): Nullable<Movie> | Promise<Nullable<Movie>>;
 }
 
 type Nullable<T> = T | null;

@@ -12,9 +12,13 @@ import { KafkaConsumerModule } from './kafkaConsumer23/kafka-consumer23.module';
 import { Cinemalu23Module } from './graphql23/cinemalu23.module';
 import { MetricsModule } from './z_metrics/metrics.module';
 import { MetricsMiddleware } from './utils23/others24/metrics-middleware23';
+import { Job23Module } from './cronStuff_101/job23/job23.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { KafkaModule } from './utils23/kafkaModule23/kafka.module';
 
 @Module({
     imports: [
+        KafkaModule,
         ConfigModule.forRoot({
             isGlobal: true,
             envFilePath: '.env'
@@ -32,6 +36,8 @@ import { MetricsMiddleware } from './utils23/others24/metrics-middleware23';
         Movies23Module,              // uses mongoose, not directly mongodb driver
         KafkaConsumerModule,
         Cinemalu23Module,
+        Job23Module,
+        ScheduleModule.forRoot(),
         MetricsModule
     ],
     controllers: [

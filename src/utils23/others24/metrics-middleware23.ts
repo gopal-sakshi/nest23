@@ -13,14 +13,14 @@ export class MetricsMiddleware implements NestMiddleware {
     constructor(private readonly metricsService: MetricsService) { }
 
     use(req: Request, res: Response, next: NextFunction) {
-        console.log(`[MetricsMiddleware] Intercepted: ${req.method} ${req.url}`);
+        // console.log(`[MetricsMiddleware] Intercepted: ${req.method} ${req.url}`);
         const { method, baseUrl, route } = req;
         const path = route?.path || baseUrl || req.url;
 
         const startTime = process.hrtime();
 
         res.on('finish', () => {
-            console.log("ended23 ========== ");
+            // console.log("ended23 ========== ");
             const { statusCode } = res;
             const diff = process.hrtime(startTime);
             const durationInSeconds = diff[0] + diff[1] / 1e9;

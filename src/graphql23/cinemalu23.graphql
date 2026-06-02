@@ -21,4 +21,9 @@ type Query {
 
 type Mutation {
   createMovie(title: String!, director: String!, releaseYear: Int!): Movie!
+  createMovieWithPubSub(title: String!, director: String!, releaseYear: Int!): Movie!
+}
+
+type Subscription {
+  movieAdded: Movie
 }

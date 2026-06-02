@@ -11,7 +11,11 @@ import { GrpcModule } from '@app/graphql23_gRPC/gRPCModule23';
         GrpcModule,
         GraphQLModule.forRoot<ApolloDriverConfig>({
             driver: ApolloDriver,      
-            typePaths: ['./**/*.graphql'], 
+            typePaths: ['./**/*.graphql'],
+            subscriptions: {
+                'graphql-ws': true,
+                'subscriptions-transport-ws': true
+            },
             definitions: {
                 path: join(process.cwd(), 'src/graphql23/cinemalu23.graphql.ts'),
                 outputAs: 'class',
