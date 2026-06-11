@@ -4,6 +4,15 @@ run these containers first
 - containers33-kafka23-1
 
 
+
+<!-- ******************************************************************* -->
+instead of sending messages from kafbat, send it like this
+open containers33-kafka23-1 shell
+/opt/kafka/bin/kafka-console-producer.sh --bootstrap-server localhost:29092 --topic containers33-topic_a1
+{ "id": 25, "status": "active", "message": "kafka meedu dandam pedutundi ayya" }
+
+<!-- ******************************************************************* -->
+
 cats23
 - returns hardcoded data
 

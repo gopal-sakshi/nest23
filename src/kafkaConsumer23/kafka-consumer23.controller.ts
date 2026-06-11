@@ -2,6 +2,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload, Ctx, KafkaContext } from '@nestjs/microservices';
 import { Queue } from 'bullmq';
+import { WebsocketGateway23 } from './websocket_gateway23';
 /*
     queue anedi redis server lo ne untundi. BullMQ redis keys (hashes, lists, sets) to queue manage chestundi
     BullMQ uses Redis Hashes for job data; Sorted Sets/Lists for queue management (waiting, active, delayed)
@@ -10,7 +11,8 @@ import { Queue } from 'bullmq';
 export class KafkaConsumerController {
 
     constructor(
-        @InjectQueue('bullmq-handle-chestunna-redisQueue') private readonly redisQueue23: Queue
+        @InjectQueue('bullmq-handle-chestunna-redisQueue') private readonly redisQueue23: Queue,
+        private readonly wsGateway23: WebsocketGateway23 // <-- Inject Gateway here
     ) { }
 
     @MessagePattern('containers33-topic_a1') // Matches the topic name from your Node script
@@ -33,5 +35,14 @@ export class KafkaConsumerController {
         });
         console.log('--- Added to BullMQ (Redis) ---');
 
+
+        // STEP 3: Send via WebSocket to Frontend instantly!
+        this.wsGateway23.sendKafkaUpdate({
+            topic: 'containers33-topic_a1',
+            partition,
+            offset,
+            data: message
+        });
+        console.log('--- Broadcasted to WebSockets 23 ---');
     }
 }

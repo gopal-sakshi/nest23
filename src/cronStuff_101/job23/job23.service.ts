@@ -22,7 +22,7 @@ export class Job23Service implements OnApplicationBootstrap {
         */
     }
 
-    @Cron(CronExpression.EVERY_10_SECONDS)
+    @Cron(CronExpression.EVERY_2_HOURS)
     public async job(): Promise<void> {
         if (!this.isAppFullyBooted) {            
             return; 

@@ -4,6 +4,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { KafkaConsumerController } from './kafka-consumer23.controller';
 import { RedisQueueDataProcessor23 } from './ProcessQueueData23';
 import { ConfigService } from '@nestjs/config';
+import { WebsocketGateway23 } from './websocket_gateway23';
 
 @Module({
     imports: [
@@ -14,7 +15,7 @@ import { ConfigService } from '@nestjs/config';
             name: 'bullmq-handle-chestunna-redisQueue',
         }),
     ],
-    providers: [RedisQueueDataProcessor23],
+    providers: [RedisQueueDataProcessor23, WebsocketGateway23],
     controllers: [KafkaConsumerController],    
 })
 export class KafkaConsumerModule { }
