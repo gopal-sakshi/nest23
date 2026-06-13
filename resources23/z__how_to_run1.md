@@ -1,5 +1,5 @@
 run these containers first
-- containers23-mongo23-1
+- containers23-mongo23-1            (mongoose module injected @ root level -- app.module.ts)
 - containers23-redisstack23-1
 - containers33-kafka23-1
 
@@ -13,14 +13,14 @@ open containers33-kafka23-1 shell
 
 <!-- ******************************************************************* -->
 
-cats23
+`cats23`
 - returns hardcoded data
 
-footballer23
+`footballer23`
 - inserts data in mongo database - 
 
 
-graphql23 & co
+`graphql23 & co`
 - exposes an endpoint /graphql
 - graphql23_telugu  = we use @Query, @Mutation decorators & fetch data from mongo database
 - graphql23_gRPC    = we fetch data from backend gRPC service (see gRPC23 which has @GrpcMethod decorator)

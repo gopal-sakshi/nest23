@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { Movie } from './movies-interface';
 import { MoviesService } from './movies-service';
 import { CreateMovieDto } from './movies-dto';
@@ -18,5 +18,12 @@ export class Movies23Controller {
     @Get()
     async findAll(): Promise<Movie[]> {
         return this.movieService.findAll();
+    }
+
+    @Get('useDynamoBabai/:movieName')
+    async getMovieByTitleFromDynamo(
+        @Param('movieName') movieName: string,
+    ): Promise<any> {
+        return this.movieService.getMovieByTitleFromDynamo(movieName);
     }
 }
