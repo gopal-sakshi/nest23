@@ -26,4 +26,19 @@ export class Movies23Controller {
     ): Promise<any> {
         return this.movieService.getMovieByTitleFromDynamo(movieName);
     }
+
+    @Get('useGraphqlBabai11')
+    async getInfoFromGraphQL_11(
+    ): Promise<any> {
+        return this.movieService.getInfoFromGraphQL11();
+    }
+
+
+    @Post('useGraphqlBabai12')
+    async getInfoFromGraphQL_12(
+        @Body() body: { modatiPeru: string, chivariPeru: string },        
+    ): Promise<any> {
+        return this.movieService.getInfoFromGraphQL12(body.modatiPeru, body.chivariPeru);
+    }
+
 }

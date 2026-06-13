@@ -2,7 +2,7 @@ run these containers first
 - containers23-mongo23-1            (mongoose module injected @ root level -- app.module.ts)
 - containers23-redisstack23-1
 - containers33-kafka23-1
-
+- graphQL24_js      lo 3014 port 2__3024 --- this needs running
 
 
 <!-- ******************************************************************* -->
@@ -26,16 +26,18 @@ open containers33-kafka23-1 shell
 - graphql23_gRPC    = we fetch data from backend gRPC service (see gRPC23 which has @GrpcMethod decorator)
 
 
-kafkaConsumer23
+`kafkaConsumer23`
 - listens on kafka queue - containers33-topic_a1
 - put data in timescaleDB; put data in redis queue - <bullmq-handle-chestunna-redisQueue>; 
 - ProcessQueueData23.ts -- listens to above redisqueue (bullmq job) and logs the data
 
 
-movie_mongoose
+`movie_mongoose`
 - uses mongoose to insert data into mongo
+- aws dynamo call -- priya aws account -- crossaccount; sts assumeRole
+- graphql call to 3014 port;
 
-student23
+`student23`
 - it also inserts data into mongo; uses mongoose
 - it has custom interceptor, custom decorator
 - it has middleware - valid for certain routes
