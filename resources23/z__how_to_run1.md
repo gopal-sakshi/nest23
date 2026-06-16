@@ -43,3 +43,34 @@ open containers33-kafka23-1 shell
 - it has middleware - valid for certain routes
 
 <!-- **************************************************************** -->
+
+ways that microservices talk to each other
+
+`gRPC`
+- Direct Network Call
+- Instant, ultra-fast internal data fetching
+- Synchronous (Blocking)
+
+`Kafka (Event-Driven)`
+- Log Appending
+- Broadcasting events to multiple systems;
+- data pipelines.
+- Asynchronous (Fire-and-Forget)
+
+`Kafka (Req/Reply)`
+- Dual-Topic Wait
+- Heavy async tasks where the sender must get a response back.
+- Asynchronous (Blocking)
+
+`Redis (BullMQ)`
+- In-Memory Queue
+- Job orchestration, retries, rate-limiting, and delayed tasks.
+- Asynchronous (Worker-Driven)
+
+`HTTP / Axios`
+- Synchronous
+- External APIs, Frontend-to-Backend, Simple MVPs.
+- Universal, easy to debug, massive ecosystem
+- High overhead, slower for internal mesh traffic.
+
+<!-- ************************************************************************** -->
