@@ -18,6 +18,7 @@ export class ControllerInterceptor23 implements NestInterceptor {
                     span.recordException(err),
                     span.setStatus({ code: 2, message: err.message });
                 }
+                console.log("err24 ===> ", err);
                 throw err;
             })
         )

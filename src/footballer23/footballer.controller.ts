@@ -1,9 +1,15 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, Sse, } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, MessageEvent, Param, Post, Put, Query, Res, Sse, } from '@nestjs/common';
 import { CreateFootballerDto } from 'src/footballer23/create-Footballer.dto';
 import { UpdateFootballerDto } from 'src/footballer23/update-Footballer.dto';
 import { FootballerService } from './footballer.service';
-import { interval, map, Observable } from 'rxjs';
+import { catchError, concat, delay, interval, map, merge, Observable, of } from 'rxjs';
 
+type StreamEvent =
+  | { type: 'status'; message: string }
+  | { type: 'partial'; data: any }
+  | { type: 'done'; summary: string }
+  | { type: 'error'; message: string };
+  
 @Controller('footballer')
 export class FootballerController {
 
@@ -12,12 +18,12 @@ export class FootballerController {
     /***************************************************************************** */
     @Post()
     async createFootballer(
-        @Res() response, 
+        @Res() response,
         @Body() createFootballerDto: CreateFootballerDto
     ) {
         try {
             const newFootballer = await this.FootballerService.createFootballer(createFootballerDto);
-            return response.status(HttpStatus.CREATED).json({message: 'Footballer has been created successfully', newFootballer });
+            return response.status(HttpStatus.CREATED).json({ message: 'Footballer has been created successfully', newFootballer });
         } catch (err) {
             return response.status(HttpStatus.BAD_REQUEST).json({ statusCode: 400, message: 'Footballer not created!', error: 'Bad Request', });
         }
@@ -38,7 +44,7 @@ export class FootballerController {
                 message: 'Footballer has been successfully updated',
                 existingFootballer,
             });
-        } catch (err:any) {
+        } catch (err: any) {
             return response.status(err.status).json(err.response);
         }
     }
@@ -52,7 +58,7 @@ export class FootballerController {
                 message: 'All Footballers data found successfully',
                 FootballerData,
             });
-        } catch (err:any) {
+        } catch (err: any) {
             return response.status(err.status).json(err.response);
         }
     }
@@ -66,7 +72,7 @@ export class FootballerController {
                 message: 'Footballer found successfully',
                 existingFootballer,
             });
-        } catch (err:any) {
+        } catch (err: any) {
             return response.status(err.status).json(err.response);
         }
     }
@@ -80,20 +86,61 @@ export class FootballerController {
                 message: 'Footballer deleted successfully',
                 deletedFootballer,
             });
-        } catch (err:any) {
+        } catch (err: any) {
             return response.status(err.status).json(err.response);
         }
     }
     /***************************************************************************** */
 
-    @Sse('/sse_endpoint23')
-    sse23(): Observable<MessageEvent> {             // NOT __ WORKING
-        console.log("rchd endpoint");
-        return interval(1000).pipe(
-            map((_) => ({ data: { hello: 'world' } }) as MessageEvent),
+    // ----------- work autundo ledo doubt eh1
+    @Sse('sse_endpoint23')
+    streamReport(@Query('q') q: string): Observable<any> {
+        // Stage 1: immediate feedback
+        const started$ = of<StreamEvent>({
+            type: 'status',
+            message: `Starting report for query: ${q}`,
+        });
+
+        // Stage 2: pretend these are async calls
+        const fast$ = of({ rows: 120, top: ['A', 'B', 'C'] }).pipe(
+            delay(150),
+            map((data) => ({ type: 'partial', data } as StreamEvent)),
+        );
+
+        const medium$ = of({ facets: { region: ['IN', 'US'], plan: ['pro', 'free'] } }).pipe(
+            delay(500),
+            map((data) => ({ type: 'partial', data } as StreamEvent)),
+        );
+
+        const slow$ = of({ enrichment: { confidence: 0.92 } }).pipe(
+            delay(1100),
+            map((data) => ({ type: 'partial', data } as StreamEvent)),
+        );
+
+        // Stage 3: done event
+        const done$ = of<StreamEvent>({ type: 'done', summary: 'Report ready' });
+
+        // Combine into a single stream
+        return concat(started$, merge(fast$, medium$, slow$), done$).pipe(
+            map((payload) => ({ data: payload })), // MessageEvent format
+            catchError((err) => {
+                console.log("err23 ==> ", err);
+                return of({
+                    data: { type: 'error', message: err?.message ?? 'Unknown error' } satisfies StreamEvent,
+                });
+            }),
         );
     }
 
+    // ----------- work autundo ledo doubt eh2
+    @Sse('sse_endpoint24')
+    streamData(): Observable<MessageEvent> {
+        return interval(1000).pipe(
+            map((num) => ({
+                data: { hello: 'world', count: num },
+            })),
+        );
+    }
     /***************************************************************************** */
 
 }

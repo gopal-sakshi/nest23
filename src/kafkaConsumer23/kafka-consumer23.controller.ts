@@ -1,6 +1,6 @@
 import { InjectQueue } from '@nestjs/bullmq';
 import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload, Ctx, KafkaContext } from '@nestjs/microservices';
+import { MessagePattern, Payload, Ctx, KafkaContext, EventPattern } from '@nestjs/microservices';
 import { Queue } from 'bullmq';
 import { WebsocketGateway23 } from './websocket_gateway23';
 /*
@@ -15,7 +15,8 @@ export class KafkaConsumerController {
         private readonly wsGateway23: WebsocketGateway23 // <-- Inject Gateway here
     ) { }
 
-    @MessagePattern('containers33-topic_a1') // Matches the topic name from your Node script
+    // ikkada @EventPattern use cheyyaali... @MessagePattern -- only for request/resp
+    @EventPattern('containers33-topic_a1') // Matches the topic name from your Node script
     async handleMessage(@Payload() message: any, @Ctx() context: KafkaContext) {
         const originalMessage = context.getMessage();
         const partition = context.getPartition();
@@ -44,5 +45,25 @@ export class KafkaConsumerController {
             data: message
         });
         console.log('--- Broadcasted to WebSockets 23 ---');
+    }
+
+    async getRandomScore(): Promise<number> {
+        return new Promise(r => setTimeout(() => r(Math.floor(Math.random() * 101)), 2000));
+    }
+
+    // mongo24_prisma repo lo ee topic ki message pampistaam; 
+    // mana nest23 repo manchiga reply istundi... 
+    @MessagePattern('nest23-calculate-credit-score23') // Listens for requests
+    async getCreditScore(@Payload() data: { userId: number }): Promise<number> {
+
+        try {
+            console.log('Raw data received ======================== :', data);
+            const score = await this.getRandomScore();
+            console.log(`Sending back score: ${score}`);
+            return score;
+        } catch (error) {
+            console.error('Error in microservice handler:', error);
+            throw error;
+        }
     }
 }
