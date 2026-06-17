@@ -10,6 +10,7 @@ import { WebsocketGateway23 } from './websocket_gateway23';
 @Controller()
 export class KafkaConsumerController {
 
+    private readonly MAX_RETRIES = 3;
     constructor(
         @InjectQueue('bullmq-handle-chestunna-redisQueue') private readonly redisQueue23: Queue,
         private readonly wsGateway23: WebsocketGateway23 // <-- Inject Gateway here
@@ -21,30 +22,54 @@ export class KafkaConsumerController {
         const originalMessage = context.getMessage();
         const partition = context.getPartition();
         const offset = originalMessage.offset;
+        const consumer = context.getConsumer();
 
-        // STEP 1       == timescale DB lo data pettu
-        console.log(`--- New Message Received ---`);
-        console.log(`Payload:`, message);
-        console.log(`Partition: ${partition} | Offset: ${offset}`);
-
-
-        // STEP 2       == bullmq queue lo pettu...  acting as BullMQ Producer
-        await this.redisQueue23.add('upload-job24', {
-            data: message,
-            receivedAt: new Date().toISOString(),
-            kafkaOffset: offset
-        });
-        console.log('--- Added to BullMQ (Redis) ---');
+        try {
+            // STEP 1       == timescale DB lo data pettu
+            console.log(`--- New Message Received ---`);
+            console.log(`Payload:`, message);
+            console.log(`Partition: ${partition} | Offset: ${offset}`);
 
 
-        // STEP 3: Send via WebSocket to Frontend instantly!
-        this.wsGateway23.sendKafkaUpdate({
-            topic: 'containers33-topic_a1',
-            partition,
-            offset,
-            data: message
-        });
-        console.log('--- Broadcasted to WebSockets 23 ---');
+            // STEP 2       == bullmq queue lo pettu...  acting as BullMQ Producer
+            await this.redisQueue23.add('upload-job24', {
+                data: message,
+                receivedAt: new Date().toISOString(),
+                kafkaOffset: offset
+            });
+            console.log('--- Added to BullMQ (Redis) ---');
+
+
+            // STEP 3: Send via WebSocket to Frontend instantly!
+            this.wsGateway23.sendKafkaUpdate({
+                topic: 'containers33-topic_a1',
+                partition,
+                offset,
+                data: message
+            });
+            console.log('--- Broadcasted to WebSockets 23 ---');
+
+            await consumer.commitOffsets([
+                { topic: 'containers33-topic_a1', partition, offset: (BigInt(offset) + 1n).toString() }
+            ]);
+            console.log(`[Success] Offset ${offset} committed successfully.`);
+
+        } catch (error: any) {
+            console.error(`[Failure] Error processing offset ${offset}:`, error.message);
+            let attempt = 1;
+            if (originalMessage.headers && originalMessage.headers['x-retry-count']) {
+                attempt = parseInt(originalMessage.headers['x-retry-count'].toString(), 10) + 1;
+            }
+
+            if (attempt <= this.MAX_RETRIES) {
+                console.warn(`[Retry] Re-trying message. Attempt ${attempt} of ${this.MAX_RETRIES}`);
+                throw error;
+
+            } else {
+                console.error(`[DLQ] Max retries reached ${offset}. Routing to DLQ emit to DLQ .`);
+                console.log("ikkada malli dlq queue nunchi - logic raasko, handle cheyyali failed msgs ki")
+            }
+        }
     }
 
     async getRandomScore(): Promise<number> {

@@ -89,6 +89,8 @@ async function bootstarp23_winstonLogger() {
             consumer: {
                 groupId: 'nest23-consumer-group',
             },
+            // <-- CRITICAL23: Gives you manual control over offsets
+            run: { autoCommit: false, }, 
         },
     });
 
