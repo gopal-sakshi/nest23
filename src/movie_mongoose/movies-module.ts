@@ -6,6 +6,7 @@ import { movies55Providers } from './movie-providers';
 import { DynamoDbMovieProvider23 } from '@app/utils23/providers23/dynamo23.Movies.provider';
 import { STSProvider } from '@app/utils23/providers23/sts23.provider';
 import { GraphqlClientProvider23 } from '@app/utils23/providers23/graphql23.provider';
+import { NotificationService } from './notification-service';
 
 @Module({
     imports: [MoviesDatabaseModule],
@@ -16,6 +17,7 @@ import { GraphqlClientProvider23 } from '@app/utils23/providers23/graphql23.prov
         STSProvider,
         DynamoDbMovieProvider23,
         GraphqlClientProvider23,
+        NotificationService,
     ],
 })
 export class Movies23Module { }

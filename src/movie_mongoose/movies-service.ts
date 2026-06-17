@@ -4,6 +4,7 @@ import { Movie } from './movies-interface';
 import { CreateMovieDto } from './movies-dto';
 import { Dynamo23MoviesRepo } from '@app/utils23/providers23/dynamo23.Movies.repository';
 import { GraphQLClient, gql } from 'graphql-request';
+import { NotificationService } from './notification-service';
 
 @Injectable()
 export class MoviesService {
@@ -11,6 +12,7 @@ export class MoviesService {
         @Inject('MOVIE_MODEL') private readonly catModel: Model<Movie>,
         private readonly dynamoMovieTable: Dynamo23MoviesRepo,
         private readonly graphqlClient: GraphQLClient,
+        private notService: NotificationService,
     ) { }
 
     async create(createCatDto: CreateMovieDto): Promise<Movie> {
@@ -55,5 +57,9 @@ export class MoviesService {
             last_name23: chivaruPeru
         }
         return this.graphqlClient.request(query23, mutationPayload23, { auth23: 'admin44' });
+    }
+
+    async createNotificationForMovie(movieId:string, templateName: string, movieData:any) {        
+        return this.notService.createNotification(movieId, templateName, movieData);
     }
 }

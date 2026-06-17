@@ -1,15 +1,15 @@
-import { Body, Controller, Delete, Get, HttpStatus, MessageEvent, Param, Post, Put, Query, Res, Sse, } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Logger, MessageEvent, Param, Post, Put, Query, Res, Sse, } from '@nestjs/common';
 import { CreateFootballerDto } from 'src/footballer23/create-Footballer.dto';
 import { UpdateFootballerDto } from 'src/footballer23/update-Footballer.dto';
 import { FootballerService } from './footballer.service';
-import { catchError, concat, delay, interval, map, merge, Observable, of } from 'rxjs';
+import { catchError, concat, delay, interval, map, merge, Observable, of, tap } from 'rxjs';
 
 type StreamEvent =
-  | { type: 'status'; message: string }
-  | { type: 'partial'; data: any }
-  | { type: 'done'; summary: string }
-  | { type: 'error'; message: string };
-  
+    | { type: 'status'; message: string }
+    | { type: 'partial'; data: any }
+    | { type: 'done'; summary: string }
+    | { type: 'error'; message: string };
+
 @Controller('footballer')
 export class FootballerController {
 
@@ -62,8 +62,66 @@ export class FootballerController {
             return response.status(err.status).json(err.response);
         }
     }
+
     /***************************************************************************** */
 
+    @Sse('sse_endpoint23')
+    streamReport(@Query('q') q: string): Observable<any> {
+
+        const started$ = of<StreamEvent>({              // Stage 1: immediate feedback
+            type: 'status',
+            message: `Starting report for query: ${q}`,
+        });
+
+        const fast$ = of({ rows: 120, top: ['A', 'B', 'C'] }).pipe(   // Stage 2: pretend these are async calls
+            delay(3000),
+            map((data) => ({ type: 'partial', data } as StreamEvent)),
+        );
+
+        const medium$ = of({ facets: { region: ['IN', 'US'], plan: ['pro', 'free'] } }).pipe(
+            delay(6000),
+            map((data) => ({ type: 'partial', data } as StreamEvent)),
+        );
+
+        const slow$ = of({ enrichment: { confidence: 0.92 } }).pipe(
+            delay(9000),
+            map((data) => ({ type: 'partial', data } as StreamEvent)),
+        );
+
+        const done$ = of<StreamEvent>({ type: 'done', summary: 'Report ready' });           // Stage 3: done event
+
+        return concat(started$, merge(fast$, medium$, slow$), done$).pipe(          // Combine into a single stream
+            map((payload) => ({ data: payload })),
+            catchError((err) => {
+                console.log("err23 ==> ", err);
+                return of({
+                    data: { type: 'error', message: err?.message ?? 'Unknown error' } satisfies StreamEvent,
+                });
+            }),
+        );
+    }
+
+    @Sse('sse_endpoint24')
+    streamData(): Observable<MessageEvent> {
+        return interval(1000).pipe(
+            map((num) => ({
+                data: { hello: 'world', count: num },
+            })),
+            tap(payload => console.log(`Emitting SSE payload: ${JSON.stringify(payload)}`)),
+            catchError(err => {
+                console.error('Stream internal error:', err);
+                throw err;
+            })
+        );
+    }
+    /***************************************************************************** */
+
+    /*
+        The control is going to getFootballer instead of your SSE endpoint because of Route Matching Order in NestJS/Express.
+        Express evaluates routes from top to bottom in the order they are defined in your controller file. 
+        If your getFootballer route is defined above your SSE route, and its path pattern is greedy enough, it will hijack the request.
+        hence move sse endpoints to the top
+    */
     @Get('/:id')
     async getFootballer(@Res() response, @Param('id') FootballerId: string) {
         try {
@@ -90,57 +148,7 @@ export class FootballerController {
             return response.status(err.status).json(err.response);
         }
     }
-    /***************************************************************************** */
 
-    // ----------- work autundo ledo doubt eh1
-    @Sse('sse_endpoint23')
-    streamReport(@Query('q') q: string): Observable<any> {
-        // Stage 1: immediate feedback
-        const started$ = of<StreamEvent>({
-            type: 'status',
-            message: `Starting report for query: ${q}`,
-        });
-
-        // Stage 2: pretend these are async calls
-        const fast$ = of({ rows: 120, top: ['A', 'B', 'C'] }).pipe(
-            delay(150),
-            map((data) => ({ type: 'partial', data } as StreamEvent)),
-        );
-
-        const medium$ = of({ facets: { region: ['IN', 'US'], plan: ['pro', 'free'] } }).pipe(
-            delay(500),
-            map((data) => ({ type: 'partial', data } as StreamEvent)),
-        );
-
-        const slow$ = of({ enrichment: { confidence: 0.92 } }).pipe(
-            delay(1100),
-            map((data) => ({ type: 'partial', data } as StreamEvent)),
-        );
-
-        // Stage 3: done event
-        const done$ = of<StreamEvent>({ type: 'done', summary: 'Report ready' });
-
-        // Combine into a single stream
-        return concat(started$, merge(fast$, medium$, slow$), done$).pipe(
-            map((payload) => ({ data: payload })), // MessageEvent format
-            catchError((err) => {
-                console.log("err23 ==> ", err);
-                return of({
-                    data: { type: 'error', message: err?.message ?? 'Unknown error' } satisfies StreamEvent,
-                });
-            }),
-        );
-    }
-
-    // ----------- work autundo ledo doubt eh2
-    @Sse('sse_endpoint24')
-    streamData(): Observable<MessageEvent> {
-        return interval(1000).pipe(
-            map((num) => ({
-                data: { hello: 'world', count: num },
-            })),
-        );
-    }
     /***************************************************************************** */
 
 }

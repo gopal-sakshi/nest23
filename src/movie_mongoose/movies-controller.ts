@@ -41,4 +41,11 @@ export class Movies23Controller {
         return this.movieService.getInfoFromGraphQL12(body.modatiPeru, body.chivariPeru);
     }
 
+    @Post('addNotification')
+    async addNotification(
+        @Body() body: { movieId: string, templateName: string, movieData: any },     
+    ) {
+        return this.movieService.createNotificationForMovie(body.movieId, body.templateName, body.movieData);
+    }
+
 }
