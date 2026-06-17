@@ -11,11 +11,25 @@ type gRPCMovie {
     description: String
 }
 
+type chessPlayer45Index {
+    id: String
+    name22: String
+    country22: String
+    is_active: Boolean
+}
+
+type chessPlayersResp11 {
+    success23: Boolean
+    data11: [chessPlayer45Index]
+    totalCount33: Int
+}
+
 type Query {
   getMovies: [Movie!]!
   getMovieById(_id: String!): Movie
 
   getGrpcData(id: String!): gRPCMovie
+  getChessData(desamu22: String, deadlineReq11: Int): chessPlayersResp11
 
 }
 

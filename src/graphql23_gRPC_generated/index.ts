@@ -1,7 +1,8 @@
+import { Metadata } from '@grpc/grpc-js';
 import { Observable } from 'rxjs';
 
 export namespace learn_grpc23 {
-    
+
     export interface GetRequest {
         id: string;
     }
@@ -27,12 +28,17 @@ export namespace learn_grpc23 {
         success23: boolean;
         data11: chessPlayer45[];
         totalCount33?: number;
-}   
+    }
     export interface IndexServiceClient {
         getData(data: GetRequest): Observable<GetResponse>;
     }
 
     export interface SportsService23Client {
-        getChessPlayers (data:chessPlayersReq11): Observable<chessPlayersResp11>;
+        getChessPlayers(
+            data: chessPlayersReq11,
+            metadata?: Metadata,
+            options?: { deadline?: Date }
+
+        ): Observable<chessPlayersResp11>;
     }
 }

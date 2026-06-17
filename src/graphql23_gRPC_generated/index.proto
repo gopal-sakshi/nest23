@@ -40,6 +40,6 @@ message chessPlayer45 {
 
 message chessPlayersResp11 {
     bool success23 = 1;
-    repeated chessPlayer45 data11 = 3;
-    optional int32 totalCount33 = 4;
+    repeated chessPlayer45 data11 = 2;
+    optional int32 totalCount33 = 3;
 }

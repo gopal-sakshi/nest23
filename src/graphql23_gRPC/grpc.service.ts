@@ -2,7 +2,7 @@ import { learn_grpc23 } from '@app/graphql23_gRPC_generated';
 import { Injectable, OnModuleInit, Inject } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom, Observable } from 'rxjs';
-
+import * as grpc from '@grpc/grpc-js'; // Import the native grpc package
 
 @Injectable()
 export class GrpcService implements OnModuleInit {
@@ -21,12 +21,27 @@ export class GrpcService implements OnModuleInit {
     }
 
     async getRemoteData(id: string) {
-        const resp23 = await this.getChessData('USA');
-        console.log("resp23 === ", resp23);
         return this.indexService.getData({ id });
     }
 
-    async getChessData(desamuVar: string) {
-        return firstValueFrom(this.sportsService.getChessPlayers({desamu:desamuVar}));
+    // deadlineReq11 == 2 seconds kante ekkuva aithe, request phattu... so, postman lo 10 sec ivvu...
+    async getChessData(desamuVar: string, deadlineReq11:number) {
+        const metadata = new grpc.Metadata();               // 1. Create gRPC metadata
+        metadata.add('correlation-id', 'unique-uuid-12345');
+        const deadline = new Date(); 
+        deadline.setSeconds(deadline.getSeconds() + Number(deadlineReq11));    // 2. Set a deadline (e.g., 2 seconds from now)
+        try {                               // 3. Pass metadata and deadline options to the gRPC call
+            const resp45 = await firstValueFrom(
+                this.sportsService.getChessPlayers(
+                    { desamu: desamuVar },
+                    metadata,
+                    { deadline }
+                )
+            );
+            return resp45;
+        } catch (error:any) {
+            console.error('gRPC Call Failed:', error.message);
+            throw error;
+        }
     }
 }
