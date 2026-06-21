@@ -83,14 +83,9 @@ async function bootstarp23_winstonLogger() {
     app.connectMicroservice<MicroserviceOptions>({
         transport: Transport.KAFKA,
         options: {
-            client: {
-                brokers: ['localhost:9092'],
-            },
-            consumer: {
-                groupId: 'nest23-consumer-group',
-            },
-            // <-- CRITICAL23: Gives you manual control over offsets
-            run: { autoCommit: false, }, 
+            client: { brokers: ['localhost:9092'], },
+            consumer: { groupId: 'nest23-consumer-group', },
+            run: { autoCommit: false, },        // <-- CRITICAL23: Gives you manual control over offsets
         },
     });
 
