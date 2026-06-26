@@ -15,6 +15,7 @@ import { MetricsMiddleware } from './utils23/others24/metrics-middleware23';
 import { Job23Module } from './cronStuff_101/job23/job23.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { KafkaModule } from './utils23/kafkaModule23/kafka.module';
+import { Job24Module } from './cronStuff_101/job24.module';
 
 @Module({
     imports: [
@@ -37,6 +38,7 @@ import { KafkaModule } from './utils23/kafkaModule23/kafka.module';
         KafkaConsumerModule,
         Cinemalu23Module,
         Job23Module,
+        Job24Module,
         ScheduleModule.forRoot(),
         MetricsModule
     ],
