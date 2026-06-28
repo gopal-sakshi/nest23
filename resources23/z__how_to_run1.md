@@ -2,7 +2,7 @@ run these containers first
 - containers23-mongo23-1            (mongoose module injected @ root level -- app.module.ts)
 - containers23-redisstack23-1
 - containers33-kafka23-1
-- graphQL24_js      lo 3014 port 2__3024 --- this needs running
+- graphQL24_js      lo 3014 port 2__3014 --- this needs running
 
 
 <!-- ******************************************************************* -->

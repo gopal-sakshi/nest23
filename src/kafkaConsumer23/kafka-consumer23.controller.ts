@@ -42,7 +42,7 @@ export class KafkaConsumerController {
 
             // STEP 3: Send via WebSocket to Frontend instantly!
             this.wsGateway23.sendKafkaUpdate({
-                topic: 'containers33-topic_a1',
+                topic: 'edaina_ichuko_idi_oka_payload_anthe',
                 partition,
                 offset,
                 data: message
